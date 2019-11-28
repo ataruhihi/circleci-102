@@ -1,37 +1,18 @@
-version: 2
+version: 2.0
 jobs:
   build:
-    working_directory: /var/www/html
-    docker:
-      - image: php:7.1-apache
-        environment:
-          APP_ENV: test
+    machine:
+      image: circleci/classic:latest
+    branches:
+          only:
+            - master
     steps:
       - run:
-          name: Install system packages
-          command: apt-get update && apt-get -y install git
-      - run:
-          name: Install PHP extensions
-          command: docker-php-ext-install pdo
+          name: Install LFTP
+          command: |
+            sudo apt-get update;
+            sudo apt-get install lftp;
       - checkout
       - run:
-          name: Install Composer
-          command: |
-            php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-            php -r "if (hash_file('SHA384', 'composer-setup.php') === trim(file_get_contents('https://composer.github.io/installer.sig'))) { echo 'Installer verified'; } else { echo 'Installer invalid'; unlink('composer-setup.php'); } echo PHP_EOL;"
-            php composer-setup.php
-            php -r "unlink('composer-setup.php');"
-      - run:
-          name: Display PHP information
-          command: |
-            php -v
-            php composer.phar --version
-      - run:
-          name: Install project dependencies
-          command: php composer.phar install
-      - run:
-          name: Run CS tests
-          command: vendor/bin/phpcs
-      - run:
-          name: Run Unit tests
-          command: vendor/bin/phpunit
+          name: Send Via SFTP
+          command: lftp sftp://${FTP_USER}:${FTP_PWD}@${FTP_LOCATION} -e "mirror -v -R --exclude .git/ --exclude .circleci/ --exclude vendor/ --exclude update/ --exclude node_modules/ --exclude install/ --exclude files/ --exclude .vscode/ ./ ${site_name}/test; quit"
