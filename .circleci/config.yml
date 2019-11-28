@@ -16,3 +16,4 @@ jobs:
       - run:
           name: Send Via SFTP
           command: lftp sftp://${FTP_USER}:${FTP_PWD}@${FTP_LOCATION} -e "mirror -v -R --exclude .git/ --exclude .circleci/ --exclude vendor/ --exclude update/ --exclude node_modules/ --exclude install/ --exclude files/ --exclude .vscode/ ./ ${site_name}/test; quit"
+
