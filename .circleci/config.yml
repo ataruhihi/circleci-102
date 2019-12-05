@@ -15,5 +15,5 @@ jobs:
       - checkout
       - run:
           name: Send Via SFTP
-          command: lftp sftp://dev.bibikids.vn@dev.bibikids.vn:dev.bibikids.vn -e "mirror -v -R ./ ./test; quit"
+          command: lftp ftp://dev@dev.bibikids.vn@dev.bibikids.vn -e "mirror -v -R ./ ./test; quit"
 
