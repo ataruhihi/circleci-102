@@ -20,3 +20,4 @@ jobs:
            set ssl:verify-certificate no
            ls
            mirror -v -R --exclude .git/ --exclude .circleci/ --exclude vendor/ --exclude update/ --exclude node_modules/ --exclude install/ --exclude files/ --exclude .vscode/R /home/circleci/project /test
+           quit
