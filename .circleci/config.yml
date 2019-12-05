@@ -15,5 +15,14 @@ jobs:
       - checkout
       - run:
           name: Send Via SFTP
-          command: lftp sftp://${FTP_USER}:${FTP_PWD}@${FTP_LOCATION}
+          command: lftp ftp://${FTP_USER}:${FTP_PWD}@${FTP_LOCATION}
+      - run:
+          name: set ssl:verify-certificate no
+          command: set ssl:verify-certificate no
+      - run:
+          name: ls
+          command: ls
+      - run:
+          name: deploy
+          command: mirror -v -R --exclude .git/ --exclude .circleci/ --exclude vendor/ --exclude update/ --exclude node_modules/ --exclude install/ --exclude files/ --exclude .vscode/R /home/circleci/project /test
 
