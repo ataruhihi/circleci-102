@@ -16,3 +16,22 @@ jobs:
       - run:
           name: Send Via SFTP
           command: lftp ftp://${FTP_USER}:${FTP_PWD}@${FTP_LOCATION} -e "set ssl:verify-certificate no; mirror -v -R --exclude .git/ --exclude .circleci/ --exclude vendor/ --exclude update/ --exclude node_modules/ --exclude install/ --exclude files/ --exclude .vscode/R /home/circleci/project /test; quit";
+workflows:
+  version: 2
+  build-test-and-approval-deploy:
+    jobs:
+      - build
+      - test1:
+          requires:
+            - build
+      - test2:
+          requires:
+            - test1
+      - test3:
+         type: approval
+         requires:
+           - test1
+           - test2
+      - deploy:
+          requires:
+            - test3
