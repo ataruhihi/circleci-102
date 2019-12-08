@@ -38,3 +38,12 @@ workflows:
       - two:
           requires:
             - one
+            
+              version: 2
+  release-branch-workflow:
+    jobs:
+      - one
+      - two:
+          type: approval
+          requires:
+            - one
