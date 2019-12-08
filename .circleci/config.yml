@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  one:
+  build:
     docker:
       - image: circleci/ruby:2.4.1
     steps:
@@ -13,8 +13,8 @@ jobs:
           root: my_workspace
           # Must be relative path from root
           paths:
-            - echo-output      
-  two:
+            - echo-output    
+  deploy:
     docker:
       - image: circleci/ruby:2.4.1
     steps:
@@ -32,16 +32,33 @@ jobs:
           fi
 workflows:
   version: 2
-  one_and_two:
+  build:
     jobs:
-      - one
-      - two:
-          requires:
-            - one
-  release-branch-workflow:
+      - build
+  release-dev:
     jobs:
-      - one
-      - two:
+      - approval:
           type: approval
           requires:
-            - one
+            - build
+      - deploy:
+          requires:
+            - approval
+  release-devtest:
+    jobs:
+      - approval:
+          type: approval
+          requires:
+            - build
+      - deploy:
+          requires:
+            - approval
+  release-wanokotest:
+    jobs:
+      - approval:
+          type: approval
+          requires:
+            - build
+      - deploy:
+          requires:
+            - approval
